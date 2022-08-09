@@ -1,4 +1,4 @@
-* # MAP: The Safe C/C++ Set Library ![license-status](https://img.shields.io/github/license/Dark-CodeX/set)
+* # SET: The Safe C/C++ Set Library ![license-status](https://img.shields.io/github/license/Dark-CodeX/set)
 	* #### **Safe set in C/C++, with huge amount of in-built functions.**
 	* #### **This library has 18 pre-defined functions.**
 	* #### **This library can be used in both C and C++.**

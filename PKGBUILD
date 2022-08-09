@@ -6,9 +6,9 @@ arch=("x86_64" "i686")
 conflicts=('openutils-set')
 depends=(gcc)
 license=("MIT")
-source=("https://raw.githubusercontent.com/Dark-CodeX/map/master/map/map.hh" "https://raw.githubusercontent.com/Dark-CodeX/map/master/map/map.h" "https://raw.githubusercontent.com/Dark-CodeX/map/master/map/prototype_err.h")
+source=("https://raw.githubusercontent.com/Dark-CodeX/set/master/set/set.hh" "https://raw.githubusercontent.com/Dark-CodeX/set/master/set/set.h" "https://raw.githubusercontent.com/Dark-CodeX/set/master/set/prototype_err.h")
 
-sha512sums=("418accdd0d9924011ba714796fe748d7d9e0ccedde569efaecbeebef845b944847fcf8464048b59657de53ab5b7261e84df936f5f857395da965e853e930c68b" "c7868d6fb2cc2112858bd2f732f9aad3ef4377d76ae9acd1d0039c0dd316cbc947ae684223db200083db3e9fda0f65ee9ad3ec94842392060aae31ebe66d0228" "19c136c9f35bb1d4a65a1b32cbe9f202fd0841c2fabaed72b40c4edf4a69568eabedbe5f0d7e99c99141eca6faf9694f6531cbb5418437b6bb66fece1a0f6456")
+sha512sums=("8296d2665a53eaad358f71210f380215c95010e49a69e27173acbce1f679b27586c811d36d921a742a32fe0297a13597cdaec072a42a53e4f7d8beca67a83413" "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e" "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e")
 
 package() {
 	echo "Memory Safe Set Library in C/C++ language."
