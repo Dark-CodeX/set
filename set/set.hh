@@ -460,7 +460,7 @@ namespace openutils
 	}
 
 	template <typename KEY>
-	inline void hash_combine(std::size_t &seed, const KEY &k)
+	inline void set_t_hash_combine(std::size_t &seed, const KEY &k)
 	{
 		seed ^= std::hash<KEY>()(k) + static_cast<std::size_t>(0xc70f6907UL) + (seed << 7) + (seed >> 3);
 	}
@@ -470,7 +470,7 @@ namespace openutils
 	{
 		std::size_t h = 0;
 		for (set_t<KEY>::iter i = this->iterator(); i.c_loop(); i.next())
-			hash_combine(h, i->key);
+			set_t_hash_combine(h, i->key);
 		return h;
 	}
 
