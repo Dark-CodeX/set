@@ -8,7 +8,7 @@ depends=(gcc)
 license=("MIT")
 source=("https://raw.githubusercontent.com/Dark-CodeX/set/master/set/set.hh" "https://raw.githubusercontent.com/Dark-CodeX/set/master/set/set.h" "https://raw.githubusercontent.com/Dark-CodeX/set/master/set/prototype_err.h")
 
-sha512sums=("8296d2665a53eaad358f71210f380215c95010e49a69e27173acbce1f679b27586c811d36d921a742a32fe0297a13597cdaec072a42a53e4f7d8beca67a83413" "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e" "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e")
+sha512sums=("914d27ac6fa35b4e9649e0fddb971732be299c795c79ec2ce0127d552cfc4ecd4e2b42ba3341e5ae82df325659c99ae1cf06625c204a1b82ffebad07e528c0ee" "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e" "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e")
 
 package() {
 	echo "Memory Safe Set Library in C/C++ language."
