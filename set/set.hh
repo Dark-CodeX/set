@@ -87,12 +87,12 @@ namespace openutils
 #endif
 
 	template <typename KEY>
-	struct node_t
+	struct set_node_t
 	{
 		KEY key;
-		node_t *next;
-		node_t() : next(nullptr) {}
-		node_t(const KEY &key) : key(key), next(nullptr) {}
+		set_node_t *next;
+		set_node_t() : next(nullptr) {}
+		set_node_t(const KEY &key) : key(key), next(nullptr) {}
 	};
 
 	template <typename KEY>
@@ -102,7 +102,7 @@ namespace openutils
 	class set_t
 	{
 	private:
-		node_t<KEY> **keys;
+		set_node_t<KEY> **keys;
 		KEY *order_key;
 		std::size_t order_key_len, order_key_cap, len, cap;
 		float load_factor;
@@ -120,14 +120,14 @@ namespace openutils
 		set_t(float load_factor);
 		bool add(KEY &&key);
 		bool add(const KEY &key);
-		bool add(const node_t<KEY> *node);
-		bool add(const node_t<KEY> &node);
+		bool add(const set_node_t<KEY> *node);
+		bool add(const set_node_t<KEY> &node);
 		bool remove(KEY &&key);
 		bool remove(const KEY &key);
 		bool contains(KEY &&key) const;
 		bool contains(const KEY &key) const;
-		const node_t<KEY> *get_node(KEY &&key) const;
-		const node_t<KEY> *get_node(const KEY &key) const;
+		const set_node_t<KEY> *get_node(KEY &&key) const;
+		const set_node_t<KEY> *get_node(const KEY &key) const;
 		std::size_t get_index(KEY &&key) const;
 		std::size_t get_index(const KEY &key) const;
 		void erase();
@@ -168,7 +168,7 @@ namespace openutils
 		this->load_factor = load_factor;
 		this->len = 0, this->order_key_cap = 10, this->order_key_len = 0;
 
-		this->keys = new node_t<KEY> *[this->cap]();
+		this->keys = new set_node_t<KEY> *[this->cap]();
 		exit_heap_fail(this->keys);
 		this->order_key = new KEY[this->order_key_cap]();
 		exit_heap_fail(this->order_key);
@@ -180,7 +180,7 @@ namespace openutils
 	set_t<KEY>::set_t(const set_t &other)
 	{
 		this->cap = 16, this->len = 0, this->order_key_len = 0, this->order_key_cap = 10;
-		this->keys = new node_t<KEY> *[this->cap]();
+		this->keys = new set_node_t<KEY> *[this->cap]();
 		exit_heap_fail(this->keys);
 		this->order_key = new KEY[this->order_key_cap]();
 		exit_heap_fail(this->order_key);
@@ -216,7 +216,7 @@ namespace openutils
 	{
 		this->cap = list.size();
 		this->len = 0, this->order_key_len = 0, this->order_key_cap = 10;
-		this->keys = new node_t<KEY> *[this->cap]();
+		this->keys = new set_node_t<KEY> *[this->cap]();
 		exit_heap_fail(this->keys);
 		this->order_key = new KEY[this->order_key_cap]();
 		exit_heap_fail(this->order_key);
@@ -231,7 +231,7 @@ namespace openutils
 	set_t<KEY>::set_t(float load_factor)
 	{
 		this->cap = 16, this->order_key_cap = 10;
-		this->keys = new node_t<KEY> *[this->cap]();
+		this->keys = new set_node_t<KEY> *[this->cap]();
 		exit_heap_fail(this->keys);
 		this->order_key = new KEY[this->order_key_cap]();
 		exit_heap_fail(this->order_key);
@@ -257,17 +257,17 @@ namespace openutils
 	void set_t<KEY>::rehash()
 	{
 		std::size_t new_cap = this->cap * 2;
-		node_t<KEY> **new_table = new node_t<KEY> *[new_cap]();
+		set_node_t<KEY> **new_table = new set_node_t<KEY> *[new_cap]();
 		exit_heap_fail(new_table);
 		for (std::size_t i = 0; i < new_cap; i++)
 			new_table[i] = nullptr;
 		for (std::size_t i = 0; i < this->cap; i++)
 		{
-			node_t<KEY> *cur = this->keys[i];
+			set_node_t<KEY> *cur = this->keys[i];
 			while (cur != nullptr)
 			{
 				std::size_t hash = this->get_hash(cur->key, new_cap);
-				node_t<KEY> *next = cur->next;
+				set_node_t<KEY> *next = cur->next;
 				cur->next = new_table[hash];
 				new_table[hash] = cur;
 				cur = next;
@@ -282,7 +282,7 @@ namespace openutils
 	bool set_t<KEY>::add(KEY &&key)
 	{
 		std::size_t hash = this->get_hash(key, this->cap);
-		node_t<KEY> *cur = this->keys[hash];
+		set_node_t<KEY> *cur = this->keys[hash];
 		while (cur != nullptr)
 		{
 			if (this->equal(cur->key, key))
@@ -290,7 +290,7 @@ namespace openutils
 			cur = cur->next;
 		}
 		this->order_key[this->order_key_len++] = key;
-		node_t<KEY> *new_node = new node_t<KEY>();
+		set_node_t<KEY> *new_node = new set_node_t<KEY>();
 		exit_heap_fail(new_node);
 		new_node->key = key;
 		new_node->next = this->keys[hash];
@@ -310,7 +310,7 @@ namespace openutils
 	}
 
 	template <typename KEY>
-	bool set_t<KEY>::add(const node_t<KEY> *node)
+	bool set_t<KEY>::add(const set_node_t<KEY> *node)
 	{
 		if (!node)
 			return false;
@@ -318,7 +318,7 @@ namespace openutils
 	}
 
 	template <typename KEY>
-	bool set_t<KEY>::add(const node_t<KEY> &node)
+	bool set_t<KEY>::add(const set_node_t<KEY> &node)
 	{
 		return this->add(node.key);
 	}
@@ -327,8 +327,8 @@ namespace openutils
 	bool set_t<KEY>::remove(KEY &&key)
 	{
 		std::size_t hash = this->get_hash(key, this->cap);
-		node_t<KEY> *cur = this->keys[hash];
-		node_t<KEY> *prev = nullptr;
+		set_node_t<KEY> *cur = this->keys[hash];
+		set_node_t<KEY> *prev = nullptr;
 		while (cur != nullptr)
 		{
 			if (this->equal(cur->key, key))
@@ -357,7 +357,7 @@ namespace openutils
 	bool set_t<KEY>::contains(KEY &&key) const
 	{
 		std::size_t hash = this->get_hash(key, this->cap);
-		node_t<KEY> *cur = this->keys[hash];
+		set_node_t<KEY> *cur = this->keys[hash];
 		while (cur != nullptr)
 		{
 			if (this->equal(cur->key, key))
@@ -374,10 +374,10 @@ namespace openutils
 	}
 
 	template <typename KEY>
-	const node_t<KEY> *set_t<KEY>::get_node(KEY &&key) const
+	const set_node_t<KEY> *set_t<KEY>::get_node(KEY &&key) const
 	{
 		std::size_t hash = this->get_hash(key, this->cap);
-		node_t<KEY> *cur = this->keys[hash];
+		set_node_t<KEY> *cur = this->keys[hash];
 		while (cur != nullptr)
 		{
 			if (this->equal(cur->key, key))
@@ -388,7 +388,7 @@ namespace openutils
 	}
 
 	template <typename KEY>
-	const node_t<KEY> *set_t<KEY>::get_node(const KEY &key) const
+	const set_node_t<KEY> *set_t<KEY>::get_node(const KEY &key) const
 	{
 		return this->get_node((KEY &&) key);
 	}
@@ -397,7 +397,7 @@ namespace openutils
 	std::size_t set_t<KEY>::get_index(KEY &&key) const
 	{
 		std::size_t hash = this->get_hash(key, this->cap);
-		node_t<KEY> *cur = this->keys[hash];
+		set_node_t<KEY> *cur = this->keys[hash];
 		if (!cur)
 			return (std::size_t)-1;
 		return hash;
@@ -414,10 +414,10 @@ namespace openutils
 	{
 		for (std::size_t i = 0; i < this->cap; i++)
 		{
-			node_t<KEY> *cur = this->keys[i];
+			set_node_t<KEY> *cur = this->keys[i];
 			while (cur != nullptr)
 			{
-				node_t<KEY> *next = cur->next;
+				set_node_t<KEY> *next = cur->next;
 				delete cur;
 				cur = next;
 			}
@@ -497,7 +497,7 @@ namespace openutils
 		std::size_t max = 0, x = 0;
 		for (std::size_t i = 0; i < this->cap; i++)
 		{
-			node_t<KEY> *temp = this->keys[i];
+			set_node_t<KEY> *temp = this->keys[i];
 			while (temp)
 				x++, temp = temp->next;
 			if (x > max)
@@ -512,10 +512,10 @@ namespace openutils
 	{
 		for (std::size_t i = 0; i < this->cap; i++)
 		{
-			node_t<KEY> *cur = this->keys[i];
+			set_node_t<KEY> *cur = this->keys[i];
 			while (cur != nullptr)
 			{
-				node_t<KEY> *next = cur->next;
+				set_node_t<KEY> *next = cur->next;
 				delete cur;
 				cur = next;
 			}
@@ -525,7 +525,7 @@ namespace openutils
 		delete[] this->keys;
 		this->len = 0, this->cap = 16, this->order_key_len = 0, this->order_key_cap = 10;
 		this->load_factor = other.load_factor;
-		this->keys = new node_t<KEY> *[this->cap]();
+		this->keys = new set_node_t<KEY> *[this->cap]();
 		exit_heap_fail(this->keys);
 		for (std::size_t i = 0; i < this->cap; i++)
 			this->keys[i] = nullptr;
@@ -543,10 +543,10 @@ namespace openutils
 		{
 			for (std::size_t i = 0; i < this->cap; i++)
 			{
-				node_t<KEY> *cur = this->keys[i];
+				set_node_t<KEY> *cur = this->keys[i];
 				while (cur != nullptr)
 				{
-					node_t<KEY> *next = cur->next;
+					set_node_t<KEY> *next = cur->next;
 					delete cur;
 					cur = next;
 				}
@@ -603,7 +603,7 @@ namespace openutils
 	{
 		for (std::size_t i = 0; i < other.cap; i++)
 		{
-			node_t<KEY> *cur = other.keys[i];
+			set_node_t<KEY> *cur = other.keys[i];
 			while (cur != nullptr)
 			{
 				this->add(cur->key);
@@ -629,10 +629,10 @@ namespace openutils
 	{
 		for (std::size_t i = 0; i < this->cap; i++)
 		{
-			node_t<KEY> *cur = this->keys[i];
+			set_node_t<KEY> *cur = this->keys[i];
 			while (cur != nullptr)
 			{
-				node_t<KEY> *next = cur->next;
+				set_node_t<KEY> *next = cur->next;
 				delete cur;
 				cur = next;
 			}
@@ -647,14 +647,14 @@ namespace openutils
 	{
 	private:
 		set_t<KEY> *m;
-		node_t<KEY> *cur;
+		set_node_t<KEY> *cur;
 		std::size_t i;
 
 	public:
 		iter_set_t(const set_t<KEY> *m);
 		bool c_loop() const;
-		node_t<KEY> *&operator->();
-		const node_t<KEY> *&operator*() const;
+		set_node_t<KEY> *&operator->();
+		const set_node_t<KEY> *&operator*() const;
 		void next();
 	};
 
@@ -665,7 +665,7 @@ namespace openutils
 		this->i = 0;
 		while (this->i < this->m->order_key_len && this->m->get_node(this->m->order_key[this->i]) == nullptr)
 			this->i++;
-		this->cur = (node_t<KEY> *)this->m->get_node(this->m->order_key[this->i]);
+		this->cur = (set_node_t<KEY> *)this->m->get_node(this->m->order_key[this->i]);
 	}
 
 	template <typename KEY>
@@ -675,15 +675,15 @@ namespace openutils
 	}
 
 	template <typename KEY>
-	node_t<KEY> *&iter_set_t<KEY>::operator->()
+	set_node_t<KEY> *&iter_set_t<KEY>::operator->()
 	{
-		return (node_t<KEY> *&)this->cur;
+		return (set_node_t<KEY> *&)this->cur;
 	}
 
 	template <typename KEY>
-	const node_t<KEY> *&iter_set_t<KEY>::operator*() const
+	const set_node_t<KEY> *&iter_set_t<KEY>::operator*() const
 	{
-		return (const node_t<KEY> *&)this->cur;
+		return (const set_node_t<KEY> *&)this->cur;
 	}
 
 	template <typename KEY>
@@ -692,7 +692,7 @@ namespace openutils
 		this->i++;
 		while (this->i < this->m->order_key_len && this->m->get_node(this->m->order_key[this->i]) == nullptr)
 			this->i++;
-		this->cur = (node_t<KEY> *)this->m->get_node(this->m->order_key[this->i]);
+		this->cur = (set_node_t<KEY> *)this->m->get_node(this->m->order_key[this->i]);
 	}
 };
 
