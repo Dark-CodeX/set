@@ -522,7 +522,7 @@ namespace openutils
 			this->keys[i] = nullptr;
 		}
 		delete[] this->keys;
-		delete[] this->keys;
+		delete[] this->order_key;
 		this->len = 0, this->cap = 16, this->order_key_len = 0, this->order_key_cap = 10;
 		this->load_factor = other.load_factor;
 		this->keys = new set_node_t<KEY> *[this->cap]();
